@@ -40,17 +40,15 @@ module latency#(  parameter DATA_WIDTH    = 8,
                   parameter WR_LATENCYA   = 1,
                   parameter RD_LATENCYA   = 1,
                   parameter WR_LATENCYB   = 1,
-                  parameter RD_LATENCYB   = 1,
-                  localparam PARITY_BITS  = $clog2(DATA_WIDTH)+1,
-                  localparam ENCODED_WORD = DATA_WIDTH + PARITY_BITS
+                  parameter RD_LATENCYB   = 1
                )( input                         i_wea,i_web,                 
                   input                         clka,clkb,                   
                   input                         i_ena_wr_in,i_enb_wr_in,     
-                  input      [ENCODED_WORD+1:1] i_wr_dina,i_wr_dinb,         
+                  input      [DATA_WIDTH-1:0] i_wr_dina,i_wr_dinb,         
                   input      [ADDR_WIDTH-1:0]   i_addra,i_addrb,             
-                  input      [ENCODED_WORD+1:1] i_rd_dina,i_rd_dinb,         
-                  output reg [ENCODED_WORD+1:1] o_wr_dina_out,o_wr_dinb_out, 
-                  output reg [ENCODED_WORD+1:1] o_rd_dina_out,o_rd_dinb_out, 
+                  input      [DATA_WIDTH-1:0] i_rd_dina,i_rd_dinb,         
+                  output reg [DATA_WIDTH-1:0] o_wr_dina_out,o_wr_dinb_out, 
+                  output reg [DATA_WIDTH-1:0] o_rd_dina_out,o_rd_dinb_out, 
                   output reg [ADDR_WIDTH-1:0]   o_addra_out,o_addrb_out,     
                   output reg                    o_wea_out,o_web_out,         
                   output reg                    o_ena_wr_out,o_enb_wr_out              
@@ -69,14 +67,6 @@ module latency#(  parameter DATA_WIDTH    = 8,
 
   reg [DATA_WIDTH-1:0] rd_dina_temp  [RD_LATENCYA:0]; // Internal variable to delay the memory data output signal by read_latency period for port-a. 
   reg [DATA_WIDTH-1:0] rd_dinb_temp  [RD_LATENCYB:0]; // Internal variable to delay the memory data output signal by read_latency period for port-b.
-  reg [ENCODED_WORD+1:1] wr_dina_temp  [WR_LATENCYA:0]; // Internal variable to delay the data_in signal by write_latency period for port-a. 
-  reg [ENCODED_WORD+1:1] wr_dinb_temp  [WR_LATENCYB:0]; // Internal variable to delay the data_in signal by write_latency period for port-b.
-  reg [ADDR_WIDTH-1:0]   wr_addra_temp [WR_LATENCYA:0]; // Internal variable to delay the address input signal by write_latency period for port-a.
-  reg [ADDR_WIDTH-1:0]   wr_addrb_temp [WR_LATENCYB:0]; // Internal variable to delay the address input signal by write_latency period for port-b.
-
-  reg [ENCODED_WORD+1:1] rd_dina_temp  [RD_LATENCYA:0]; // Internal variable to delay the memory data output signal by read_latency period for port-a. 
-  reg [ENCODED_WORD+1:1] rd_dinb_temp  [RD_LATENCYB:0]; // Internal variable to delay the memory data output signal by read_latency period for port-b.
-
   
 `ifdef  LATENCYA_1
   //This procedural block delays the write enable and enable signals by

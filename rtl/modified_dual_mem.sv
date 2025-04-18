@@ -34,19 +34,16 @@ module modified_dual_mem#( parameter DATA_WIDTH    = 8,
                            parameter WR_LATENCYA   = 1,
                            parameter RD_LATENCYA   = 1,
                            parameter WR_LATENCYB   = 1,
-                           parameter RD_LATENCYB   = 1,
-                           localparam PARITY_BITS  = $clog2(DATA_WIDTH)+1,
-                           localparam ENCODED_WORD = DATA_WIDTH + PARITY_BITS)( input                         clka,clkb,             
-                                                                                input                         i_ena_wr,i_enb_wr,     
-                                                                                input                         i_ena_rd,i_enb_rd,     
-                                                                                input                         i_we_a,i_rd_a,         
-                                                                                input                         i_we_b,i_rd_b,         
-                                                                                input      [ENCODED_WORD+1:1] i_din_a,i_din_b,       
-                                                                                input      [ADDR_WIDTH-1:0]   i_addra_wr,i_addrb_wr, 
-                                                                                input      [ADDR_WIDTH-1:0]   i_addra_rd,i_addrb_rd, 
-                                                                                output reg [ENCODED_WORD+1:1] o_douta,o_doutb        
+                           parameter RD_LATENCYB   = 1 )( input                       clka,clkb,             
+                                                          input                       i_ena_wr,i_enb_wr,     
+                                                          input                       i_ena_rd,i_enb_rd,     
+                                                          input                       i_we_a,i_rd_a,         
+                                                          input                       i_we_b,i_rd_b,         
+                                                          input      [DATA_WIDTH-1:0] i_din_a,i_din_b,       
+                                                          input      [ADDR_WIDTH-1:0] i_addra_wr,i_addrb_wr, 
+                                                          input      [ADDR_WIDTH-1:0] i_addra_rd,i_addrb_rd, 
+                                                          output reg [DATA_WIDTH-1:0] o_douta,o_doutb        
                                                      );
-  
 
   reg [MEM_WIDTH-1:0] mem [MEM_DEPTH-1:0]; // Internal memory declaration for read and write operations.
 

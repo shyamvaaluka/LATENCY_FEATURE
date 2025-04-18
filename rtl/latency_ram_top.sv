@@ -28,22 +28,19 @@ module latency_top#(  parameter WR_LATENCYA   = 1,
                       parameter RD_LATENCYB   = 1,
                       parameter DATA_WIDTH    = 8,
                       parameter ADDR_WIDTH    = $clog2(MEM_DEPTH),
-                      parameter MEM_DEPTH     = 16,
-                      localparam PARITY_BITS  = $clog2(DATA_WIDTH)+1,
-                      localparam ENCODED_WORD = DATA_WIDTH + PARITY_BITS)( input                     i_wea,i_web,     
-                                                                           input                     i_ena,i_enb,     
-                                                                           input                     clka,clkb,       
-                                                                           input  [ENCODED_WORD+1:1] i_dina,i_dinb,   
-                                                                           input  [ADDR_WIDTH-1:0]   i_addra,i_addrb, 
-                                                                           output [ENCODED_WORD+1:1] o_douta,o_doutb   
-                                                                        );
+                      parameter MEM_DEPTH     = 16 )( input                   i_wea,i_web,     
+                                                      input                   i_ena,i_enb,     
+                                                      input                   clka,clkb,       
+                                                      input  [DATA_WIDTH-1:0] i_dina,i_dinb,   
+                                                      input  [ADDR_WIDTH-1:0] i_addra,i_addrb, 
+                                                      output [DATA_WIDTH-1:0] o_douta,o_doutb   
+                                                    );
 
-  wire [ENCODED_WORD+1:1] mem_douta,mem_doutb;               //outputs of memory comes to these wires.
-  wire [ENCODED_WORD+1:1] latency_dina,latency_dinb;         //these wires are connected to i_dina and i_dinb of dp ram.
-  wire [ADDR_WIDTH-1:0]   latency_wr_addra,latency_wr_addrb; //these wires are connected to i_addra_wr and i_addrb_wr of dp ram.
-  wire                    latency_wea,latency_web;           //these wires are connected to i_we_a and i_we_b of dp ram.
-  wire                    latency_wr_ena,latency_wr_enb;     //these wires are connected to i_ena_wr and i_enb_wr of dp ram.
-
+  wire [DATA_WIDTH-1:0] mem_douta,mem_doutb;               //outputs of memory comes to these wires.
+  wire [DATA_WIDTH-1:0] latency_dina,latency_dinb;         //these wires are connected to i_dina and i_dinb of dp ram.
+  wire [ADDR_WIDTH-1:0] latency_wr_addra,latency_wr_addrb; //these wires are connected to i_addra_wr and i_addrb_wr of dp ram.
+  wire                  latency_wea,latency_web;           //these wires are connected to i_we_a and i_we_b of dp ram.
+  wire                  latency_wr_ena,latency_wr_enb;     //these wires are connected to i_ena_wr and i_enb_wr of dp ram.
 
   //The latency module delays all the write operation related signals by write
   //latency period and the output of the dual port ram is taken as read
