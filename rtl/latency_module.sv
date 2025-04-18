@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  File name         : latency_module.sv                                                                              //
 //  Version           : 0.2                                                                                            //
@@ -40,6 +41,62 @@ module latency#(  parameter DATA_WIDTH   = 8,
                   output reg [ADDR_WIDTH-1:0]   o_addra_out,o_addrb_out,     // Address out signals for port-a and port-b.
                   output reg                    o_wea_out,o_web_out,         // Write enable outputs for port-a and port-b.
                   output reg                    o_ena_wr_out,o_enb_wr_out    // Write operation related enables signal outputs of port-a and port-b.          
+=======
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  File name         : latency_module.sv                                                                                     //
+//  Version           : 0.2                                                                                                   //
+//                                                                                                                            //
+//  parameters used   : DATA_WIDTH  : Width of the data                                                                       //
+//                      ADDR_WIDTH  : Width of the address                                                                    //
+//                      MEM_DEPTH   : Depth of the DP RAM                                                                     //
+//                      MEM_WIDTH   : Width of each location in DP RAM                                                        //
+//                      WR_LATENCYA : Write latency of port-a                                                                 //
+//                      RD_LATENCYA : Read latency of port-a                                                                  //
+//                      WR_LATENCYB : Write latency of port-b                                                                 //
+//                      RD_LATENCYB : Read latency of port-b                                                                  // 
+//                                                                                                                            //
+//  Signals Used      : i_wea,i_web                  : Write enable inputs for port-a and port-b.                             //
+//                      clka,clkb                    : Clock inputs for port-a and port-b.                                    //
+//                      i_ena_wr_in,i_enb_wr_in      : Write operation related enable signals for port-a and port-b.          //
+//                      i_wr_dina,i_wr_dinb          : Write operation related data input signals for port-a and port-b.      //
+//                      i_addra,i_addrb              : Input address for port-a and port-b.                                   //
+//                      i_rd_dina,i_rd_dinb          : Read operation related data inputs for port-a and port-b.              //
+//                      o_wr_dina_out,o_wr_dinb_out  : Write operation related data out signal for port-a and port-b.         //
+//                      o_rd_dina_out,o_rd_dinb_out  : Read operation related data out signal for port-a and port-b.          //
+//                      o_addra_out,o_addrb_out      : Address out signals for port-a and port-b.                             //
+//                      o_wea_out,o_web_out          : Write enable outputs for port-a and port-b.                            //
+//                      o_ena_wr_out,o_enb_wr_out    : Write operation related enables signal outputs of port-a and port-b.   //
+//                                                                                                                            //
+//                                                                                                                            //
+//  File Description  : This module applies latency to the signals. All the write operation related                           //
+//                      signals are delayed by write latency parameter and the read related signals                           //
+//                      are delayed with read latency parameter. The write delayed signals are then                           //  
+//                      given to the normal DP RAM. And the output of the DP RAM is inturn given to                           //                                                
+//                      latency module which is then delayed by read latency parameter.                                       //                                                                           
+//                                                                                                                            //  
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
+module latency#(  parameter DATA_WIDTH    = 8,
+                  parameter ADDR_WIDTH    = $clog2(MEM_DEPTH),
+                  parameter MEM_DEPTH     = 16,
+                  parameter MEM_WIDTH     = 2 * DATA_WIDTH,
+                  parameter WR_LATENCYA   = 1,
+                  parameter RD_LATENCYA   = 1,
+                  parameter WR_LATENCYB   = 1,
+                  parameter RD_LATENCYB   = 1,
+                  localparam PARITY_BITS  = $clog2(DATA_WIDTH)+1,
+                  localparam ENCODED_WORD = DATA_WIDTH + PARITY_BITS
+               )( input                         i_wea,i_web,                 
+                  input                         clka,clkb,                   
+                  input                         i_ena_wr_in,i_enb_wr_in,     
+                  input      [ENCODED_WORD+1:1] i_wr_dina,i_wr_dinb,         
+                  input      [ADDR_WIDTH-1:0]   i_addra,i_addrb,             
+                  input      [ENCODED_WORD+1:1] i_rd_dina,i_rd_dinb,         
+                  output reg [ENCODED_WORD+1:1] o_wr_dina_out,o_wr_dinb_out, 
+                  output reg [ENCODED_WORD+1:1] o_rd_dina_out,o_rd_dinb_out, 
+                  output reg [ADDR_WIDTH-1:0]   o_addra_out,o_addrb_out,     
+                  output reg                    o_wea_out,o_web_out,         
+                  output reg                    o_ena_wr_out,o_enb_wr_out              
 
                 );
   
@@ -55,6 +112,13 @@ module latency#(  parameter DATA_WIDTH   = 8,
 
   reg [DATA_WIDTH-1:0] rd_dina_temp  [RD_LATENCYA:0]; // Internal variable to delay the memory data output signal by read_latency period for port-a. 
   reg [DATA_WIDTH-1:0] rd_dinb_temp  [RD_LATENCYB:0]; // Internal variable to delay the memory data output signal by read_latency period for port-b.
+  reg [ENCODED_WORD+1:1] wr_dina_temp  [WR_LATENCYA:0]; // Internal variable to delay the data_in signal by write_latency period for port-a. 
+  reg [ENCODED_WORD+1:1] wr_dinb_temp  [WR_LATENCYB:0]; // Internal variable to delay the data_in signal by write_latency period for port-b.
+  reg [ADDR_WIDTH-1:0]   wr_addra_temp [WR_LATENCYA:0]; // Internal variable to delay the address input signal by write_latency period for port-a.
+  reg [ADDR_WIDTH-1:0]   wr_addrb_temp [WR_LATENCYB:0]; // Internal variable to delay the address input signal by write_latency period for port-b.
+
+  reg [ENCODED_WORD+1:1] rd_dina_temp  [RD_LATENCYA:0]; // Internal variable to delay the memory data output signal by read_latency period for port-a. 
+  reg [ENCODED_WORD+1:1] rd_dinb_temp  [RD_LATENCYB:0]; // Internal variable to delay the memory data output signal by read_latency period for port-b.
 
   
 `ifdef  LATENCYA_1
