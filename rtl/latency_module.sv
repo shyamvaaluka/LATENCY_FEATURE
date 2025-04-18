@@ -41,17 +41,17 @@ module latency#(  parameter DATA_WIDTH    = 8,
                   parameter RD_LATENCYA   = 1,
                   parameter WR_LATENCYB   = 1,
                   parameter RD_LATENCYB   = 1
-               )( input                         i_wea,i_web,                 
-                  input                         clka,clkb,                   
-                  input                         i_ena_wr_in,i_enb_wr_in,     
+               )( input                       i_wea,i_web,                 
+                  input                       clka,clkb,                   
+                  input                       i_ena_wr_in,i_enb_wr_in,     
                   input      [DATA_WIDTH-1:0] i_wr_dina,i_wr_dinb,         
-                  input      [ADDR_WIDTH-1:0]   i_addra,i_addrb,             
+                  input      [ADDR_WIDTH-1:0] i_addra,i_addrb,             
                   input      [DATA_WIDTH-1:0] i_rd_dina,i_rd_dinb,         
                   output reg [DATA_WIDTH-1:0] o_wr_dina_out,o_wr_dinb_out, 
                   output reg [DATA_WIDTH-1:0] o_rd_dina_out,o_rd_dinb_out, 
-                  output reg [ADDR_WIDTH-1:0]   o_addra_out,o_addrb_out,     
-                  output reg                    o_wea_out,o_web_out,         
-                  output reg                    o_ena_wr_out,o_enb_wr_out              
+                  output reg [ADDR_WIDTH-1:0] o_addra_out,o_addrb_out,     
+                  output reg                  o_wea_out,o_web_out,         
+                  output reg                  o_ena_wr_out,o_enb_wr_out              
 
                 );
   
